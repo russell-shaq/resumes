@@ -10,7 +10,7 @@ import com.ruslanshakirov.storage.Storage;
  * Test ru.javawebinar.basejava.storage.com.ruslanshakirov.storage.ArrayStorage
  */
 public class MainTestArrayStorage {
-    static final Storage ARRAY_STORAGE = new SortedArrayStorage();
+    static final Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();

@@ -1,5 +1,8 @@
 package com.ruslanshakirov.storage;
 
+import com.ruslanshakirov.exceptions.ExistStorageException;
+import com.ruslanshakirov.exceptions.NotExistStorageException;
+import com.ruslanshakirov.exceptions.StorageException;
 import com.ruslanshakirov.model.Resume;
 
 import java.util.Arrays;
@@ -23,8 +26,7 @@ public abstract class AbstractArrayStorage implements Storage {
         Objects.requireNonNull(uuid);
         int index = getIndex(uuid);
         if (index < 0) {
-            System.err.println(OBJECT_DOESNT_EXIST);
-            return null;
+            throw new NotExistStorageException(uuid);
         }
         return storage[index];
     }
@@ -47,7 +49,7 @@ public abstract class AbstractArrayStorage implements Storage {
         Objects.requireNonNull(uuid);
         int index = getIndex(uuid);
         if (index < 0) {
-            System.err.println(OBJECT_DOESNT_EXIST);
+            throw new NotExistStorageException(uuid);
         } else {
             fillDeletedElement(index);
             size--;
@@ -59,7 +61,7 @@ public abstract class AbstractArrayStorage implements Storage {
         Objects.requireNonNull(r);
         int index = getIndex(r.getUuid());
         if (index < 0) {
-            System.err.println(OBJECT_DOESNT_EXIST);
+            throw new NotExistStorageException(r.getUuid());
         } else {
             storage[index] = r;
         }
@@ -70,9 +72,9 @@ public abstract class AbstractArrayStorage implements Storage {
         Objects.requireNonNull(r);
         int index = getIndex(r.getUuid());
         if (index >= 0) {
-            System.err.println(OBJECT_EXISTS);
-        } else if (size() >= storage.length) {
-            System.out.println(ARRAY_OVERFLOW);
+            throw new ExistStorageException(r.getUuid());
+        } else if (size >= storage.length) {
+            throw new StorageException("Storage overflow", r.getUuid());
         } else {
             addElement(index, r);
             size++;

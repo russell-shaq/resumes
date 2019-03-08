@@ -10,7 +10,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     @Override
     protected void addElement(int index, Resume r) {
         if (size < storage.length) {
-            storage[size++] = r;
+            storage[size] = r;
         }
     }
 
