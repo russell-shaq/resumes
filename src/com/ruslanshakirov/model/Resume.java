@@ -9,18 +9,20 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Initial resume class
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Resume implements Comparable<Resume>{
-
     // Unique identifier
     private String uuid;
+
+    public Resume() {
+        uuid = UUID.randomUUID().toString();
+    }
 
     @Override
     public boolean equals(Object o) {
