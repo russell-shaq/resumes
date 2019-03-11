@@ -1,15 +1,16 @@
 package com.ruslanshakirov.storage;
 
+import com.ruslanshakirov.model.Resume;
 import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-public class ArrayStorageTest extends AbstractArrayStorageTest{
+public class ArrayStorageTest extends AbstractArrayStorageTest {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        storage = new ArrayStorage();
-        super.setUp();
+    public ArrayStorageTest() {
+        super(new ArrayStorage());
     }
+
 }
