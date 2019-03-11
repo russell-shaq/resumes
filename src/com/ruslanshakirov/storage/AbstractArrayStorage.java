@@ -1,19 +1,13 @@
 package com.ruslanshakirov.storage;
 
-import com.ruslanshakirov.exceptions.ExistStorageException;
-import com.ruslanshakirov.exceptions.NotExistStorageException;
 import com.ruslanshakirov.exceptions.StorageException;
 import com.ruslanshakirov.model.Resume;
 
 import java.util.Arrays;
-import java.util.Objects;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[10000];
     protected int size = 0;
-    protected static final String OBJECT_DOESNT_EXIST = "This object doesn't exist in storage";
-    protected static final String OBJECT_EXISTS = "This object already exists";
-    protected static final String ARRAY_OVERFLOW = "Array is overflown";
 
     @Override
     public void clear() {
@@ -22,66 +16,40 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public Resume get(String uuid) {
-        Objects.requireNonNull(uuid);
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
+    public int size() {
+        return size;
+    }
+
+    @Override
+    protected Resume doGet(String uuid, int index) {
         return storage[index];
     }
 
     @Override
-    public int size() {
-        return size;
-
+    protected void doSave(Resume resume, int index) {
+        if (size >= storage.length) {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        }
+        addElement(index, resume);
+        size++;
     }
 
     @Override
-    public Resume[] getAll() {
+    protected void doUpdate(Resume resume, int index) {
+        storage[index] = resume;
+    }
+
+    @Override
+    protected void doDelete(String uuid, int index) {
+        fillDeletedElement(index);
+        size--;
+    }
+
+    @Override
+    protected Resume[] doGetAll() {
         Resume[] resumes = new Resume[size];
         return Arrays.copyOf(storage, size);
-        //System.arraycopy(storage, 0, resumes, 0, size);
     }
-
-    @Override
-    public void delete(String uuid) {
-        Objects.requireNonNull(uuid);
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            fillDeletedElement(index);
-            size--;
-        }
-    }
-
-    @Override
-    public void update(Resume r) {
-        Objects.requireNonNull(r);
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        } else {
-            storage[index] = r;
-        }
-    }
-
-    @Override
-    public void save(Resume r) {
-        Objects.requireNonNull(r);
-        int index = getIndex(r.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else if (size >= storage.length) {
-            throw new StorageException("Storage overflow", r.getUuid());
-        } else {
-            addElement(index, r);
-            size++;
-        }
-    }
-
-    protected abstract int getIndex(String uuid);
 
     protected abstract void addElement(int index, Resume r);
 
